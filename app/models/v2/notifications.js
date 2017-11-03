@@ -4,8 +4,8 @@ const storage = require("node-persist");
 
 module.exports.sendNotification = (titulo, descripcion, featured_image) => {
 
-  var API_ACCESS_KEY = 'AAAArb1kRa4:APA91bHXslv809bbK5PspcrpcuYbf2jdD5VKx12A3e_1RV8KrZgHM7_sJAUPvagGOuX5n9LdeE5B2NOgynXmXmZTDHhCo2kwwBh3BzGPbhHCy2C8aJO_S8_Sqck1DeB5yjMNwc7EJURL';
-
+  var API_ACCESS_KEY = '';
+  
   storage.initSync();
   var regID = storage.getItemSync('regID');
 
