@@ -1,0 +1,39 @@
+{
+  "name": "ssapi",
+  "version": "2.0.0",
+  "description": "SSAPI for SS Alcalá 2018 application created by Sukafe & W4E.",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "mocha"
+  },
+  "author": "Sergio Clebal",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "1.16.0",
+    "cached-request": "^1.1.2",
+    "cluster": "0.7.7",
+    "compression": "^1.6.2",
+    "cron": "^1.2.1",
+    "express": "4.14.1",
+    "express-myconnection": "^1.0.4",
+    "fs-jetpack": "0.10.5",
+    "json-update": "3.0.0",
+    "method-override": "2.3.7",
+    "mocha": "^4.0.1",
+    "mysql2": "1.1.2",
+    "node-cron": "^1.2.1",
+    "node-fetch": "^1.6.3",
+    "node-persist": "^2.1.0",
+    "request": "^2.81.0",
+    "update-json": "1.0.0",
+    "websocket": "^1.0.24"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "standard": "8.6.0"
+  },
+  "engines": {
+    "node": "^7.5.0"
+  }
+}
