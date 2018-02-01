@@ -1,6 +1,8 @@
 cache/v2/
 app/cache/v2/tmp/
 app/cache/v2/tmp/*
+.node-persist/
+.node-persist/*
 
 # Logs
 logs
