@@ -1,6 +1,6 @@
 module.exports = (app) => {
 
-  const mysql = require('../helpers/mysql')
+  const mysql = require('../helpers/mysql');
 
   app.get('/activar/:her', (req, res) => {
     mysql.query(`UPDATE hermandad SET isOut = 1 WHERE title = '${req.params.her}'`, req);

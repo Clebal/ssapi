@@ -1,6 +1,6 @@
 function Hora(horas, minutos, segundos) {
 
-  if (typeof(horas) === 'string') {
+  if (typeof (horas) === 'string') {
 
     var aux = horas.split(':');
 
@@ -18,25 +18,24 @@ function Hora(horas, minutos, segundos) {
 
 }
 
-Hora.prototype.setHorasMinutos = function(oldHora, tiempo) {
+Hora.prototype.setHorasMinutos = function (oldHora, tiempo) {
 
-  if (parseFloat(oldHora.minutos) + tiempo >= 60) {
+  var i = 1;
+  while(parseFloat(oldHora.minutos) + tiempo >= 60 * i ){
 
-    this.setHoras(parseFloat(oldHora.horas) + 1);
-
-    this.setMinutos(parseFloat(oldHora.minutos) + tiempo - 60);
-
-  } else {
-
-    this.setHoras(oldHora.horas);
-
-    this.setMinutos(parseFloat(oldHora.minutos) + tiempo);
+    i++;
 
   }
 
+  i--;
+  
+  this.setHoras(parseFloat(oldHora.horas) + i);
+  var aux = 60*i;
+  this.setMinutos(parseFloat(oldHora.minutos) + tiempo - aux);
+
 };
 
-Hora.prototype.setHoras = function(horas) {
+Hora.prototype.setHoras = function (horas) {
 
   if (horas == 24) {
     this.horas = "00";
@@ -46,7 +45,7 @@ Hora.prototype.setHoras = function(horas) {
 
 };
 
-Hora.prototype.setMinutos = function(minutos) {
+Hora.prototype.setMinutos = function (minutos) {
 
   if (minutos < 10) {
     this.minutos = "0" + minutos;
@@ -56,20 +55,24 @@ Hora.prototype.setMinutos = function(minutos) {
 
 };
 
-Hora.prototype.toMinutes = function() {
+Hora.prototype.toMinutes = function () {
   return parseFloat(this.horas) + this.minutos / 60 + this.segundos / 3600;
 };
 
-Hora.prototype.toMinutes = function() {
+Hora.prototype.toMinutes = function () {
   return this.horas * 60 + parseFloat(this.minutos) + this.segundos / 60;
 };
 
-Hora.prototype.toSeconds = function() {
+Hora.prototype.toSeconds = function () {
   return this.horas * 3600 + this.minutos * 60 + parseFloat(this.segundos);
 };
 
-Hora.prototype.toString = function() {
+Hora.prototype.toString = function () {
   return this.horas + ":" + this.minutos + ":" + this.segundos;
+};
+
+Hora.prototype.toQuery = function () {
+  return this.horas + ":" + this.minutos;
 };
 
 module.exports = Hora;

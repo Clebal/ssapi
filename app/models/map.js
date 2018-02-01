@@ -1,6 +1,6 @@
 const mysql = require('../helpers/mysql');
 const fetch = require('node-fetch');
-const WebSocket = require('../helpers/websocket');
+// const WebSocket = require('../helpers/websocket');
 const fs = require('fs-jetpack');
 const json = require('json-update');
 
@@ -55,7 +55,7 @@ function getCurrentTime(){
 }
 
 function convertToTime(hora){
-	var hora = hora.split(":");
+	hora = hora.split(":");
 	var totalTime = (hora[0] * 60) + parseInt(hora[1]);
 	return totalTime;
 }
@@ -127,7 +127,7 @@ module.exports.create = (her, req, res) => {
 
             var velocidad_media = data[her].velocidad_acumulada / data[her].numRegistros;
 
-            WebSocket.sendMessage(`"latitud": "${latitud}", "longitud": "${longitud}", "velocidad": "${velocidad_media}", "titulo": "${her}"`);
+            // WebSocket.sendMessage(`"latitud": "${latitud}", "longitud": "${longitud}", "velocidad": "${velocidad_media}", "titulo": "${her}"`);
 
             var marcador = {"latitud": latitud, "longitud": longitud, "velocidad": velocidad_media, "titulo": her};
             itinerario.update(marcador, req);

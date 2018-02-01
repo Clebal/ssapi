@@ -20,6 +20,10 @@ require('./app/routes/v2/itinerario')(app);
 require('./app/routes/v2/map')(app);
 require('./app/helpers/v2/websocket');
 
+app.get("/", (req, res) => {
+  res.render("index");
+})
+
 // if (cluster.isMaster) {
 //   console.log('start cluster with %s workers', workers)
 //

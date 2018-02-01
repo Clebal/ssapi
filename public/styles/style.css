@@ -1,0 +1,58 @@
+html, body{
+    background: rgb(133, 2, 145)!important;
+}
+
+*{
+    font-family: 'Roboto', sans-serif;
+}
+
+h1#titulo {
+    text-align: center;
+}
+
+section {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-flow: column;
+    height: 100%;
+    width: 60%;
+    float: right;
+    color: white;
+}
+
+div#left-content{
+    width: 40%;
+    height: 100%;
+    display: inline-block;
+    background: rgb(43, 43, 43);
+    color: white;
+}
+
+div#left-content div#console{
+    padding: 25px;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+i#settings{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+}
+
+button{
+    margin:auto;
+    display: block;
+    margin-top: 25px;
+}
+
+#map {
+    width: 400px;
+    height: 600px;
+    background-color: grey;
+    margin: auto;
+}

@@ -22,4 +22,5 @@ module.exports = (app) => {
   app.post('/v2/hermandad/:her', (req, res) => {
     Hermandad.update(req.params.her, req, res);
   });
+  
 };

@@ -1,5 +1,138 @@
 html
   head
-    title= title
+    meta(charset="UTF-8")
+    title= Prueba
+    link(rel="stylesheet", href="styles/normalize.css") 
+    link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
+    link(href="styles/style.css", rel="stylesheet", type="text/css")
+    link(href="https://fonts.googleapis.com/css?family=Roboto", rel="stylesheet")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
   body
-    h1= message
+    div#left-content
+      div#console
+    i.material-icons.md-48#settings(data-toggle='modal', data-target='#exampleModal') settings
+    section
+
+      h1#titulo Test de socket
+      div
+        article
+          div#map
+        button.btn-primary#testsocket Test
+    
+    // Modal
+    #exampleModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5#exampleModalLabel.modal-title Configuración
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+          .modal-body
+            form
+              .form-group
+                label(for="duracion") Duración entre envíos
+                - var duracion = 5;
+                input.form-control#duracion(type="number", name="duracion", value=duracion)
+              .form-group
+                label(for="hermandad") Hermandad
+                - var hermandad = "cautivo";
+                select.form-control#hermandad(name="hermandad", value=hermandad)
+                  option(value="cautivo") Cautivo
+
+
+    script(src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous")
+      
+    script.
+      function initMap() {
+        var uluru = {lat: 37.332577, lng: -5.851443};
+        window.map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 20,
+          center: uluru
+        });
+        window.marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+
+    script.
+      var checkTest = false;
+      var test = document.getElementById('testsocket');
+      test.onclick = async function(e){
+
+        checkTest = (checkTest ? true : true);
+        addLog("Empieza el test...")
+        addLog("Cargando itinerario "+hermandad.value+".json")
+        try{
+          var itinerario = await loadItinerario(hermandad.value);
+          addLog("Cargadas " + itinerario.length + " posiciones")
+          addLog("Duración de la prueba: " +  Math.round((itinerario.length * duracion.value)/60) + " minutos ("+duracion.value+" segundos cada una)");
+        } catch(err){
+          addLog(err, true);
+        }
+
+        var i = 0;
+        var lat = itinerario[i]._attributes.lat;
+        var lng = itinerario[i]._attributes.lon;
+        changeMarkerPosition(lat, lng);
+        setInterval(function(){
+          i++;
+          lat = itinerario[i]._attributes.lat;
+          lng = itinerario[i]._attributes.lon;
+          addLog("Latitud: " +lat+ ", Longitud: "+lng)
+          sendPosition(lat, lng);
+          changeMarkerPosition(lat, lng);
+        }, duracion.value * 1000)
+
+      };
+
+      function sendPosition(lat, lng){
+        var request = new Request('http://localhost:3014/v2/map/cautivo', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "latitud=" + lat + "&longitud=" + lng
+        });
+
+        fetch(request).then(function(response) {
+          return response.json();
+        }).then(function(aux) {
+          console.log(aux);
+        });
+      }
+
+      function changeMarkerPosition(lat, lng){
+        var latlng = new google.maps.LatLng(lat, lng);
+        window.marker.setPosition(latlng);
+        window.map.setCenter(latlng);
+      }
+
+      function loadItinerario(hermandad){
+        return new Promise(function(resolve, reject){
+          fetch("http://localhost:3014/itinerario/"+hermandad+".json").then(function(res){
+            return res.json();
+          }).then(function(data){
+            resolve(data.gpx.wpt);
+          }).catch(function(err){
+            reject(err);
+          })
+        })
+      }
+
+      function addLog(content, err){
+        var webconsole = document.getElementById('console');
+        var p = document.createElement("p");
+        if(err){
+          content = "ERROR: " + content;
+        }
+        var pcontent = document.createTextNode(content);
+        p.appendChild(pcontent);
+        webconsole.appendChild(p);
+      }
+      
+    script(async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUkO2IaOTX6AoeelSh28XQeJ2Zzrf2XPI&callback=initMap")

@@ -64,9 +64,9 @@ module.exports.getNews = (force, num = 10, offset = 0) => {
           id: id,
           titulo: titulo,
           contenido: post_content_array,
-          images: images,
-          featured_image: featured_image,
-          url: url,
+          imagenes: images,
+          thumbnail: featured_image,
+          url: url
         };
 
         resultado.push(noticia);

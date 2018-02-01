@@ -8,6 +8,7 @@ module.exports = {
     host: 'localhost',
     user: 'root',
     password: 'salida10',
-    database: 'ssapi'
+    database: 'ssapi',
+    port: '3333'
   }
 };

@@ -25,6 +25,7 @@
     "node-cron": "^1.2.1",
     "node-fetch": "^1.6.3",
     "node-persist": "^2.1.0",
+    "pug": "^2.0.0-rc.4",
     "request": "^2.81.0",
     "update-json": "1.0.0",
     "websocket": "^1.0.24"

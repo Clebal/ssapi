@@ -7,58 +7,114 @@ const Distance = require("../../helpers/v2/distance");
 // Modelo
 const Hora = require("./hora");
 
-module.exports.all = (req, res) => {
+module.exports.all = (req, res) =>  {
   return mysql.query('SELECT * FROM itinerario', req, res);
 };
 
-module.exports.get = (her, req, res) => {
+module.exports.get = (her, req, res) =>  {
   return mysql.query(`SELECT IT.* FROM itinerario IT JOIN hermandad HER ON HER.id = IT.id_hermandad WHERE HER.title = '${her}' `, req, res);
 };
 
-module.exports.believe = (her, req, res) => {
-  return mysql.query(`SELECT IT.* FROM itinerario_real IT JOIN hermandad HER ON HER.id = IT.id_hermandad WHERE HER.title = '${her}' `, req, res);
+module.exports.believe = (her, req) =>  {
+  return new Promise((resolve, reject) => {
+    resolve(mysql.queryAsync(`SELECT IT.* FROM itinerario_real IT JOIN hermandad HER ON HER.id = IT.id_hermandad WHERE HER.title = '${her}' `, req));
+  })
 };
 
-module.exports.update = (marcador, req) => {
+function update(marcador, i, queue, req) {
+
+  // console.log("Ejecuta update pasandole como parametro: " + marcador + " - " + i + " - " + queue);
 
   const date = new Date();
 
-  mysql.queryAsync(`SELECT IT.* FROM itinerario_real IT INNER JOIN hermandad HER ON IT.id_hermandad = HER.id WHERE IT.llegado = 'no' AND HER.title = '${marcador.titulo}'`, req).then((puntosControl)=>{
+  mysql.queryAsync(`SELECT IT.* FROM itinerario_real IT INNER JOIN hermandad HER ON IT.id_hermandad = HER.id WHERE IT.llegado = 'no' AND HER.title = '${marcador.titulo}'`, req).then((puntosControl) => {
 
     // Obtenemos el punto de control más próximo.
-    const puntoControl = puntosControl[0];
+    const puntoControl = puntosControl[i];
 
-    const coorOrigen  = {lat: puntoControl.latitud, lng: puntoControl.longitud };
-    const coorDestino = {lat: marcador.latitud,     lng: marcador.longitud };
+    // console.log("Nuestro punto de control en la iteración " + i + " es " + puntoControl.nombre);
+
+    const coorOrigen = {
+      lat: marcador.latitud,
+      lng: marcador.longitud
+    };
+    const coorDestino = {
+      lat: puntoControl.latitud,
+      lng: puntoControl.longitud
+    };
 
     // Calculamos la distancia entre el punto de control y
     // el nuevo que hemos recibido.
-    const distancia = Distance.getDistance(coorOrigen, coorDestino);
+    Distance.getDistance(coorOrigen, coorDestino).then(function (distancia) {
 
-    console.log("La distancia obtenida es: " + distancia);
+      // console.log("La distancia obtenida es: " + distancia);
 
-    // Calculamos el tiempo (en min) que a esa velocidad
-    // tardaremos en recorrer la distancia restante
-    // hasta el siguiente punto de control.
-    const tiempoMin = Math.ceil((distancia/marcador.velocidad)/60);
+      var distanceAux = Distance.getDistanceAlg(coorOrigen, coorDestino);
 
-    // Hora actual
-    var horaInicial  =  new Hora(date.getHours(), date.getMinutes());
-    // Hora autocalculada
-    var horaFinal    =  new Hora(date.getHours(), date.getMinutes());
+      if (distancia - distanceAux >= 100) {
+        distancia = distanceAux;
+      }
 
-    horaFinal.setHorasMinutos(horaInicial, tiempoMin);
+      // Calculamos el tiempo (en min) que a esa velocidad
+      // tardaremos en recorrer la distancia restante
+      // hasta el siguiente punto de control.
+      const tiempoMin = Math.ceil((distancia / marcador.velocidad) / 60);
 
-    const query = "UPDATE itinerario_real SET hora = "+horaFinal.toString()+" WHERE id = "+puntoControl.id;
+      queue += tiempoMin;
+      
 
-    console.log(query);
+      // Hora actual
+      var horaInicial = new Hora(date.getHours(), date.getMinutes(), date.getSeconds());
+      // Hora autocalculada
+      var horaFinal = new Hora(date.getHours(), date.getMinutes(), date.getSeconds());
 
-    mysql.query(query, req);
+      horaFinal.setHorasMinutos(horaInicial, queue);
 
-    if(Distance.isInside(coorOrigen, coorDestino, 50) == true){
-      mysql.query("UPDATE itinerario_real SET llegado = 'si' WHERE id = "+puntoControl.id, req);
+      const query = "UPDATE itinerario_real SET hora = '" + horaFinal.toQuery() + "' WHERE id = " + puntoControl.id;
+
+      mysql.query(query, req);
+
+      if (i == 0) {
+
+        if (Distance.isInside(distancia, 10) == true) {
+          mysql.query("UPDATE itinerario_real SET llegado = 'si' WHERE id = " + puntoControl.id, req);
+        } else if (Distance.isInside(distancia, 200) == true) {
+          if (puntoControl.sentido == "dcha" && coorOrigen.lng > puntoControl.longitud) {
+            mysql.query("UPDATE itinerario_real SET llegado = 'si' WHERE id = " + puntoControl.id, req);
+          } else if (puntoControl.sentido == "izda" && coorOrigen.lng < puntoControl.longitud) {
+            mysql.query("UPDATE itinerario_real SET llegado = 'si' WHERE id = " + puntoControl.id, req);
+          }
+        }
+
+      }
+
+      if (i != puntosControl.length - 1 || (i != puntosControl.length && puntosControl.length == 1)) {
+
+        marcadorx = {
+          latitud: puntoControl.latitud,
+          longitud: puntoControl.longitud,
+          titulo: marcador.titulo,
+          velocidad: marcador.velocidad
+        };
+
+        i += 1;
+
+        update(marcadorx, i, queue, req);
+
+      }
+
+    }).catch((err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+  }).catch((err) => {
+    if (err) {
+      console.log(err);
     }
+  });
 
-    }).catch((err)=>{if(err){ console.log(err); }});
+}
 
-};
+module.exports.update = update;
