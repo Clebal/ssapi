@@ -1,0 +1,287 @@
+extends ../layout/layout.pug
+
+block content
+  main#socket
+    article#socket
+      i.material-icons.md-48#settings(data-toggle='modal', data-target='#configuracion') settings
+      i#add.material-icons.md-48(data-toggle='modal', data-target='#addMap') add
+      div#mapa-content
+
+    #right-content
+      #mapjson
+        h2 map.json
+        pre#mapcode
+
+  
+  // Modal
+  #configuracion.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#exampleModalLabel.modal-title Configuración
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form
+            .form-group
+              label(for="duracion") Duración entre envíos (Segundos)
+              - var duracion = 5;
+              input.form-control#duracion(type="number", name="duracion", value=duracion)
+
+  #addMap.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#exampleModalLabel.modal-title Añadir mapa
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          form#addMapForm
+            .form-group
+              label(for="hermandad") Hermandad
+              select.form-control#hermandad(name="hermandad")
+                option(value="tercera") Tercera
+                option(value="borriquita") Borriquita
+                option(value="cautivo") Cautivo
+        .modal-footer
+          button.btn.btn-primary#crearMap Crear
+
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous")
+  script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous")
+  
+  script.
+    $('.play').on('click',  function (e) {
+      console.log("asd");
+      var id = $(e.currentTarget).attr("id").split("-")[1];
+      $("#paus-"+id).fadeIn();
+      $("#stop-"+id).fadeIn();
+      $(e.currentTarget).fadeOut();
+      $("#log").fadeIn();
+    })
+
+  script.
+    var configuracion = { i: 0 };
+
+    $("#crearMap").click(() => {
+      configuracion.i++;
+      var hermandad = document.forms["addMapForm"]["hermandad"].value;
+      configuracion["mapa-"+configuracion.i] = hermandad;
+      
+      var mapa = $("<div class='mapa' id='mapa-"+configuracion.i+"'><div class='mapa-control' id='mapa-control-"+configuracion.i+"'></div><br><p id='mapa-titulo'>"+hermandad+"</p><div id='test-buttons'><i class='material-icons md-48 pause' id='pause-"+configuracion.i+"'>pause</i><i class='material-icons md-48 play' id='play-"+configuracion.i+"'>play_arrow</i><i class='material-icons md-48 stop' id='stop-"+configuracion.i+"'>stop</i></div><p class='log' id='log-1'></p>")
+
+      $("#mapa-content").append(mapa);
+      initMap("mapa-control-"+configuracion.i)
+    })
+
+    function initMap(id) {
+      var uluru = {lat: 37.332577, lng: -5.851443};
+      window.map = new google.maps.Map(document.getElementById(id), {
+        zoom: 20,
+        center: uluru
+      });
+      window.marker = new google.maps.Marker({
+        position: uluru,
+        map: map
+      });
+    }
+
+  script.
+    var mapjson = {
+      "tercera": {
+          "fecha": "8/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "borriquita": {
+          "fecha": "9/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "rosario": {
+          "fecha": "9/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "perdon": {
+          "fecha": "12/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "soberano": {
+          "fecha": "12/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "cautivo": {
+          "fecha": "5/11",
+          "timestamp": "",
+          "lat": "37.338474",
+          "lng": "-5.8436",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "amargura": {
+          "fecha": "5/11",
+          "timestamp": "",
+          "lat": "37.338474",
+          "lng": "-5.8436",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "virgen": {
+          "fecha": "25/11",
+          "timestamp": "",
+          "lat": "37.324093",
+          "lng": "-5.861740",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "madruga": {
+          "fecha": "14/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "entierro": {
+          "fecha": "15/4",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "misericordia": {
+          "fecha": "",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      },
+      "paz": {
+          "fecha": "",
+          "timestamp": "",
+          "lat": "",
+          "lng": "",
+          "velocidad": 0,
+          "velocidadAcumulada": 0,
+          "velocidadMedia": 0,
+          "numRegistros": 0
+      }
+    }
+
+    var changeJson = (function changeJson() {
+      var mapcodeElement = $('#mapcode');
+      mapcodeElement.html(JSON.stringify(mapjson, null, 4));
+      return changeJson;
+    })()
+
+  script.
+    var checkTest = false;
+    
+    $("#mapa-content").on("click", ".play", async function(e){
+ 
+      var id = $(e.target).attr("id").split("-")[1];
+      var log = $("#log-"+id);
+      var hermandad = configuracion['mapa-'+id];
+
+      checkTest = (checkTest ? true : true);
+
+      try{
+        var itinerario = await loadItinerario(hermandad);
+      } catch(err){
+        log.html(err);
+      }
+
+      var i = 0;
+      var lat = itinerario[i]._attributes.lat;
+      var lng = itinerario[i]._attributes.lon;
+      changeMarkerPosition(lat, lng);
+      setInterval(function(){
+        i++;
+        lat = itinerario[i]._attributes.lat;
+        lng = itinerario[i]._attributes.lon;
+        log.html("Latitud: " +lat+ ", Longitud: "+lng);
+        sendPosition(lat, lng, hermandad);
+        changeMarkerPosition(lat, lng);
+      }, duracion.value * 1000)
+
+    });
+
+    function sendPosition(lat, lng, hermandad){
+      var request = new Request('http://localhost:3014/itinerario/'+hermandad, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "latitud=" + lat + "&longitud=" + lng + "&test=" + JSON.stringify(mapjson)
+      });
+
+      fetch(request).then(function(response) {
+        return response.json();
+      }).then(function(aux) {
+        mapjson = aux;
+        changeJson();
+      });
+    }
+
+    function changeMarkerPosition(lat, lng){
+      var latlng = new google.maps.LatLng(lat, lng);
+      window.marker.setPosition(latlng);
+      window.map.setCenter(latlng);
+    }
+
+    function loadItinerario(hermandad){
+      return new Promise(function(resolve, reject){
+        fetch("http://localhost:3014/itinerario/"+hermandad+".json").then(function(res){
+          return res.json();
+        }).then(function(data){
+          resolve(data.gpx.wpt);
+        }).catch(function(err){
+          reject(err);
+        })
+      })
+    }
+
+    
+  script(async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUkO2IaOTX6AoeelSh28XQeJ2Zzrf2XPI")

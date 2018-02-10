@@ -20,17 +20,19 @@
     "fs-jetpack": "0.10.5",
     "json-update": "3.0.0",
     "method-override": "2.3.7",
-    "mocha": "^4.0.1",
     "mysql2": "1.1.2",
     "node-cron": "^1.2.1",
     "node-fetch": "^1.6.3",
     "node-persist": "^2.1.0",
     "pug": "^2.0.0-rc.4",
+    "realm": "^2.2.6",
     "request": "^2.81.0",
     "update-json": "1.0.0",
     "websocket": "^1.0.24"
   },
   "devDependencies": {
+    "benchmark": "^2.1.4",
+    "mocha": "^4.0.1",
     "nodemon": "^1.11.0",
     "standard": "8.6.0"
   },

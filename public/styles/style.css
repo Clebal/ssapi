@@ -8,21 +8,55 @@ html, body{
 
 h1#titulo {
     text-align: center;
+    color: white;
 }
 
-section {
+/* index */
+section#index {
     display: flex;
     align-content: center;
     justify-content: center;
     flex-flow: column;
     height: 100%;
-    width: 60%;
-    float: right;
+    width: 100%;
+}
+
+section#index  h1#titulo {
+    margin-bottom: 50px;
+    margin-top: -50px;
+    font-weight: bold;
+    font-size: 80px;
+}
+
+section#index form {
+    margin: auto;
+    text-align: center;
+}
+
+section#index form input.form-control {
+    width: 80%;
+    height: 65px;
+    font-size: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    border: 0px;
+    margin: auto;
+}
+
+/* socket */
+article#socket {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-flow: column;
+    height: 100%;
+    width: 80%;
     color: white;
 }
 
 div#left-content{
-    width: 40%;
+    width: 20%;
     height: 100%;
     display: inline-block;
     background: rgb(43, 43, 43);
@@ -31,9 +65,15 @@ div#left-content{
 
 div#left-content div#console{
     padding: 25px;
-    height: 100%;
     overflow-y: scroll;
 }
+
+div#right-content{
+    width: 20%;
+    background: rgb(43, 43, 43);
+    color: white;
+}
+
 
 i#settings{
     position: absolute;
@@ -50,9 +90,101 @@ button{
     margin-top: 25px;
 }
 
-#map {
+
+main#socket{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-flow: row;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+
+div h2 {
+    font-family: 'Inconsolata', monospace;
+    font-size: 25px;
+}
+
+div#console p {    
+    font-family: 'Inconsolata', monospace;
+}
+
+div#mapjson {
+    padding: 25px;
+    overflow-y: scroll;
+    height: 100%;
+}
+
+div#mapjson pre{    
+    font-family: 'Inconsolata', monospace;
+    color: white;
+    padding-top: 0px;
+    margin: 0px;
+}
+
+
+/*****/
+
+div#initial {
+    width: 400px;
+    height: 600px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: auto;
+    border-radius: 10px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+i#add {
+    margin: auto;
+    position: absolute;
+    right: 80px;
+    top: 18px;
+    cursor: pointer;
+    font-size: 35px;
+    font-weight: bold;
+    color: white;
+}
+
+div#initial:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+article#socket div#mapa-content {
+    display: flex;
+}
+
+article#socket div#mapa-content div.mapa {
+    margin: auto;
+}
+
+article#socket div#mapa-content div.mapa div.mapa-control {
     width: 400px;
     height: 600px;
     background-color: grey;
     margin: auto;
+}
+
+div#test-buttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+div#test-buttons i.material-icons {
+    font-size: 40px;
+}
+
+.log {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+
+p#mapa-titulo {
+    text-align: center; margin: 0px; padding: 0px; font-size: 25px;
 }
